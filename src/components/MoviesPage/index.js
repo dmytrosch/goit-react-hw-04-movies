@@ -4,28 +4,26 @@ import MoviesList from "../MoviesList";
 import Error from "../Error";
 
 import fetchMovies from "../../utils/fetchMovies";
+import getQueryParams from "../../utils/getQueryParams";
 
 export default class MoviesPage extends React.Component {
     state = {
-        searchQuery: null,
         error: false,
         films: [],
         loading: false,
     };
-    async componentDidUpdate(prevProps, prevState) {
-        console.log(prevState.searchQuery, this.state.searchQuery);
-        if (prevState.searchQuery !== this.state.searchQuery) {
-            this.toggleLoader();
-            try {
-                const searchResult = await fetchMovies.getFilmsBySearchQuery(
-                    this.state.searchQuery
-                );
-                this.setState({ films: searchResult });
-            } catch {
-                this.setState({ error: true });
-            } finally {
-                this.toggleLoader();
-            }
+    componentDidMount() {
+        const parsedQuery = getQueryParams(this.props.location.search);
+        if (parsedQuery.search) {
+            this.findFilms(parsedQuery.search);
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const parsedQuery = getQueryParams(this.props.location.search);
+        const prevParsedQuery = getQueryParams(prevProps.location.search);
+        if (parsedQuery.search !== prevParsedQuery.search) {
+            this.findFilms(parsedQuery.search);
         }
     }
     toggleLoader() {
@@ -33,18 +31,31 @@ export default class MoviesPage extends React.Component {
             loading: !prevState.loading,
         }));
     }
+    async findFilms(query) {
+        this.toggleLoader();
+        try {
+            const searchResult = await fetchMovies.getFilmsBySearchQuery(query);
+            this.setState({ films: searchResult });
+        } catch {
+            this.setState({ error: true });
+        } finally {
+            this.toggleLoader();
+        }
+    }
 
     searchHandler = (event) => {
         event.preventDefault();
         const query = event.target.elements.searchQuery.value;
         if (query) {
-            this.setState({
-                searchQuery: query,
+            this.props.history.push({
+                pathname: this.props.location.pathname,
+                search: `search=${query}`,
             });
         }
     };
     render() {
-        const { films, searchQuery, error, loading } = this.state;
+        const { films, error, loading } = this.state;
+        const searchQuery = getQueryParams(this.props.location.search).search;
         return (
             <>
                 <form onSubmit={this.searchHandler}>
