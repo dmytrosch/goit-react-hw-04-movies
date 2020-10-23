@@ -23,9 +23,13 @@ export default {
             .then((response) => response.json())
             .then((result) => result.cast);
     },
+    getFilmsReviews(id) {
+        return fetch(BASE_URL + "movie/" + id + "/reviews?" + API_KEY)
+            .then((response) => response.json())
+    },
     getImageUrl(path) {
         return path
             ? `https://image.tmdb.org/t/p/original${path}`
             : "http://placehold.it/350x450";
-    }
+    },
 };

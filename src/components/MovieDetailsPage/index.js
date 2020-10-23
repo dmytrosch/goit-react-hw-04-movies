@@ -1,13 +1,13 @@
 import React from "react";
-import { Link, Route } from "react-router-dom";
+import { Link, Route, Switch } from "react-router-dom";
 
 import fetchMovies from "../../utils/fetchMovies";
 
 import Error from "../Error";
-import Cast from '../Cast'
+import Cast from "../Cast";
+import Reviews from "../Reviews";
 
 export default class MovieDetailsPage extends React.Component {
-   static movieId = this.props.match.params.movieId;
     state = {
         filmInfo: "",
         error: false,
@@ -16,7 +16,9 @@ export default class MovieDetailsPage extends React.Component {
     async componentDidMount() {
         this.toggleLoader();
         try {
-            const filmObj = await fetchMovies.getFilmDetails(this.movieId);
+            const filmObj = await fetchMovies.getFilmDetails(
+                this.props.match.params.movieId
+            );
             this.setState({
                 filmInfo: filmObj,
             });
@@ -49,7 +51,7 @@ export default class MovieDetailsPage extends React.Component {
             genres,
         } = filmInfo;
         return (
-             <>
+            <>
                 {error && <Error />}
                 {loading && <p>Loading...</p>}
                 {filmInfo && (
@@ -68,24 +70,37 @@ export default class MovieDetailsPage extends React.Component {
                             <h3>Genres</h3>
                             <p>{this.getGenresString(genres)}</p>
                         </div>
-                        <hr/>
+                        <hr />
                         <div>
                             <h4>Additional information: </h4>
                             <ul>
                                 <li>
-                                    <Link to={`${this.props.match.url}/cast`}>Cast</Link>
+                                    <Link to={`${this.props.match.url}/cast`}>
+                                        Cast
+                                    </Link>
                                 </li>
                                 <li>
-                                    <Link to={`${this.props.match.url}/reviews`}>
+                                    <Link
+                                        to={`${this.props.match.url}/reviews`}
+                                    >
                                         Reviews
                                     </Link>
                                 </li>
                             </ul>
-                            <Route path={`${this.props.match.path}/cast`} component={Cast}/>
+                            <Switch>
+                                <Route
+                                    path={`${this.props.match.path}/cast`}
+                                    component={Cast}
+                                />
+                                <Route
+                                    path={`${this.props.match.path}/reviews`}
+                                    component={Reviews}
+                                />
+                            </Switch>
                         </div>
                     </section>
-                )}</>
-            
- );
+                )}
+            </>
+        );
     }
 }

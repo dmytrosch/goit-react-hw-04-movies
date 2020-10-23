@@ -5,14 +5,19 @@ import fetchMovies from "../../utils/fetchMovies";
 import Error from "../Error";
 
 export default class Cast extends React.Component {
-    static movieId = this.props.match.params.movieId;
-    state = { castObjects: null, loading: false, error: false };
+    state = {
+        castObjectsArr: null,
+        loading: false,
+        error: false,
+    };
 
     async componentDidMount() {
         this.toggleLoader();
         try {
-            const castObjects = await fetchMovies.getCastInfo(this.movieId);
-            this.setState({ castObjects });
+            const castObjectsArr = await fetchMovies.getCastInfo(
+                this.props.match.params.movieId
+            );
+            this.setState({ castObjectsArr });
         } catch {
             this.setState({ error: true });
         } finally {
@@ -26,14 +31,15 @@ export default class Cast extends React.Component {
     }
 
     render() {
-        const { loading, castObjects, error } = this.state;
+        const { loading, castObjectsArr, error } = this.state;
 
         return (
             <>
-                {castObjects && (
+                <h2>Cast:</h2>
+                {castObjectsArr && (
                     <ul>
-                        {castObjects.map((object) => (
-                            <li>
+                        {castObjectsArr.map((object) => (
+                            <li key={object.id}>
                                 <img
                                     src={fetchMovies.getImageUrl(
                                         object.profile_path
