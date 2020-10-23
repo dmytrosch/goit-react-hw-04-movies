@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import routes from "../../routes";
 
@@ -52,3 +53,7 @@ export default function Layout({ children }) {
         </>
     );
 }
+
+Layout.propTypes = {
+    children: PropTypes.object.isRequired,
+};

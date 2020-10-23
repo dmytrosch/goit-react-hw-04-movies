@@ -72,7 +72,7 @@ export default class MoviesPage extends React.Component {
                         {searchQuery}"
                     </p>
                 )}
-                {films.length > 0 && <MoviesList moviesList={films} />}
+                {films.length > 0 && <MoviesList moviesList={films} location={this.props.location}/>}
                 {error && <Error />}
             </>
         );

@@ -1,13 +1,20 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function MoviesList({ moviesList }) {
+import routes from '../../routes'
+
+export default function MoviesList({ moviesList, location }) {
     return (
         <div>
             <ul>
                 {moviesList.map((film) => (
                     <li key={film.id}>
-                        <Link to={`/movies/${film.id}`}>
+                        <Link
+                            to={{
+                                pathname: `${routes.movies}/${film.id}`,
+                                state: { from: location },
+                            }}
+                        >
                             {film.title}
                         </Link>
                     </li>

@@ -2,6 +2,7 @@ import React from "react";
 import { Link, Route, Switch } from "react-router-dom";
 
 import fetchMovies from "../../utils/fetchMovies";
+import routes from "../../routes";
 
 import Error from "../Error";
 import Cast from "../Cast";
@@ -40,6 +41,14 @@ export default class MovieDetailsPage extends React.Component {
         const string = arrName.join(" ");
         return string;
     }
+    goBackBtnHandler = () => {
+        const { history, location } = this.props;
+        if (location.state && location.state.from) {
+            history.push(location.state.from);
+        } else {
+            history.push(routes.home);
+        }
+    };
 
     render() {
         const { error, loading, filmInfo } = this.state;
@@ -52,11 +61,11 @@ export default class MovieDetailsPage extends React.Component {
         } = filmInfo;
         return (
             <>
+                <button onClick={this.goBackBtnHandler}>Go back</button>
                 {error && <Error />}
                 {loading && <p>Loading...</p>}
                 {filmInfo && (
                     <section>
-                        <button>Go back</button>
                         <div>
                             <img
                                 src={fetchMovies.getImageUrl(poster_path)}

@@ -31,7 +31,7 @@ export default class HomePage extends React.Component {
                 {movies && !error && (
                     <>
                         <h2>Trending today</h2>
-                        <MoviesList moviesList={movies} />
+                        <MoviesList moviesList={movies} location={this.props.location}/>
                     </>
                 )}
                 {error && <Error />}
